@@ -1,0 +1,142 @@
+-- base de datos original
+CREATE DATABASE ersdatabase;
+
+USE ersdatabase;
+
+CREATE TABLE estadocurso (
+  id INT NOT NULL AUTO_INCREMENT,
+  EC_Descripcion VARCHAR(300) NOT NULL UNIQUE,
+  PRIMARY KEY (id)
+);
+
+-- Agregar Fotocheck, Tipo, Empresa y Firma 
+CREATE TABLE instructor (
+  id INT NOT NULL AUTO_INCREMENT,
+  I_DNI VARCHAR(255) NOT NULL,
+  I_Nombre VARCHAR(255) NOT NULL,
+  I_ApPaterno VARCHAR(255) NOT NULL,
+  I_ApMaterno VARCHAR(255) NOT NULL,
+  I_Especialidad VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+-- agregar un nº de certificado
+CREATE TABLE estudiante (
+  id INT NOT NULL AUTO_INCREMENT,
+  S_DNI VARCHAR(255) NOT NULL UNIQUE,
+  S_Fotocheck VARCHAR(255) NOT NULL UNIQUE,
+  S_Nombre VARCHAR(255) NOT NULL,
+  S_ApPaterno VARCHAR(255) NOT NULL,
+  S_ApMaterno VARCHAR(255) NOT NULL,
+  S_Telefono VARCHAR(255) NOT NULL,
+  S_Area VARCHAR(255) NOT NULL,
+  S_Puesto VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE empresa (
+  id INT NOT NULL AUTO_INCREMENT,
+  E_Nombre VARCHAR(255) NOT NULL,
+  E_Ruc VARCHAR(255) NOT NULL,
+  E_Descripcion TEXT NOT NULL,
+  E_Direccion VARCHAR(255) NOT NULL,
+  E_Ciudad VARCHAR(255) NOT NULL,
+  E_Pais VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE estadocalificacion (
+  id INT NOT NULL AUTO_INCREMENT,
+  EC_Descripcion VARCHAR(50) UNIQUE NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE tipopago (
+  id INT NOT NULL AUTO_INCREMENT,
+  Descripcion VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE usuario (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  usuario VARCHAR(50),
+  nombre VARCHAR(100),
+  pass VARCHAR(255)
+);
+
+CREATE TABLE curso (
+  id INT NOT NULL AUTO_INCREMENT,
+  C_Cod VARCHAR(255) NOT NULL UNIQUE,
+  C_Nombre VARCHAR(255) NOT NULL,
+  C_Duracion INT NOT NULL,
+  C_Tipo VARCHAR(255) NOT NULL,
+  C_Costo DECIMAL(10, 2) NOT NULL,
+  C_Costo_Dolar DECIMAL(10, 2) NOT NULL,
+  C_Descripcion TEXT NOT NULL,
+  EC_id INT NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (EC_id) REFERENCES estadocurso(id)
+);
+
+CREATE TABLE sesion (
+  id INT NOT NULL AUTO_INCREMENT,
+  Ses_Fecha DATE NOT NULL,
+  Ses_Observacion TEXT NOT NULL,
+  Ses_Lugar VARCHAR(255) NOT NULL,
+  Ses_Duracion INT NOT NULL,
+  I_id INT NOT NULL,
+  C_id INT NOT NULL,
+  Ses_FechaCreacion TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  FOREIGN KEY (C_id) REFERENCES curso(id),
+  FOREIGN KEY (I_id) REFERENCES instructor(id)
+);
+
+CREATE TABLE sesioncalificacion (
+  id INT NOT NULL AUTO_INCREMENT,
+  Ses_id INT NOT NULL,
+  S_id INT NOT NULL,
+  CC_Nentrada VARCHAR(255) NOT NULL,
+  CC_Nsalida VARCHAR(255) NOT NULL,
+  CC_Noral VARCHAR(255) NOT NULL,
+  EC_id INT NOT NULL,
+  E_id INT NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (Ses_id) REFERENCES sesion(id),
+  FOREIGN KEY (S_id) REFERENCES estudiante(id),
+  FOREIGN KEY (EC_id) REFERENCES estadocalificacion(id),
+  FOREIGN KEY (E_id) REFERENCES empresa(id)
+);
+
+CREATE TABLE pago (
+  ID_Pago INT NOT NULL AUTO_INCREMENT,
+  Fecha TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  Id_SesCal INT NOT NULL,
+  Tip_Pago INT NOT NULL,
+  PRIMARY KEY (ID_Pago),
+  FOREIGN KEY (Id_SesCal) REFERENCES sesioncalificacion(id),
+  FOREIGN KEY (Tip_Pago) REFERENCES tipopago(id)
+);
+
+INSERT INTO
+  `estadocalificacion`
+VALUES
+  (3, 'APROBADO'),
+(2, 'DESAPROBADO'),
+(1, 'SIN NOTA');
+
+INSERT INTO
+  `estadocurso`
+VALUES
+  (1, 'ACTIVO'),
+(2, 'INACTIVO');
+
+INSERT INTO
+  `tipopago`
+VALUES
+  (1, 'PAGADA'),
+(2, 'EMITIDA'),
+(3, 'PENDIENTE'),
+(4, 'NO PAGADA');
+
+DROP DATABASE ersdatabase;
