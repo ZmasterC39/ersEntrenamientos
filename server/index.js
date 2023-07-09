@@ -19,12 +19,12 @@ import auth from "./routes/auth.routes.js";
 import reporte from "./routes/reportes.routes.js";
 import valorizacion from "./routes/valorizacion.routes.js"
 import estudianteSesion from "./routes/estudianteSesion.routes.js"
+import {PORT} from "./config.js"
 
 import {dirname, join} from "path";  //
 import { fileURLToPath } from "url"; //
 import { dir } from "console";
 
-const port = process.env.PORT || 5000;
 
 const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url)); //
@@ -58,5 +58,5 @@ app.use(estudianteSesion)
 
 app.use(express.static(join(__dirname, '../client/build')))
 
-app.listen(port);
-console.log(`Server is running on port ${port}`);
+app.listen(PORT);
+console.log(`Server is running on port ${PORT}`);
